@@ -18,5 +18,6 @@ export default {
     '!src/**/*.d.ts',
     '!src/main.tsx',
     '!src/vite-env.d.ts'
-  ]
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json']
 };
