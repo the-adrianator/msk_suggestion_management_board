@@ -33,6 +33,14 @@ export interface AdminUser {
   permissions: string[]; // e.g., ['create_suggestions', 'update_status', 'view_all']
 }
 
+// Mock auth session
+export interface AdminSession {
+  email: string;
+  name: string;
+  role: string;
+  permissions: string[];
+}
+
 // Filter and search types
 export interface SuggestionFilters {
   employeeId?: string;

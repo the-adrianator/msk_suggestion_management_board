@@ -53,7 +53,7 @@ describe('filterSuggestions', () => {
     const filters: SuggestionFilters = { employeeId: 'emp001' };
     const result = filterSuggestions(mockSuggestions, filters);
     expect(result).toHaveLength(2);
-    expect(result.every(s => s.employeeId === 'emp001')).toBe(true);
+    expect(result.every((s) => s.employeeId === 'emp001')).toBe(true);
   });
 
   it('should filter by type', () => {
@@ -74,7 +74,7 @@ describe('filterSuggestions', () => {
     const filters: SuggestionFilters = { source: 'admin' };
     const result = filterSuggestions(mockSuggestions, filters);
     expect(result).toHaveLength(2);
-    expect(result.every(s => s.source === 'admin')).toBe(true);
+    expect(result.every((s) => s.source === 'admin')).toBe(true);
   });
 
   it('should filter by priority', () => {

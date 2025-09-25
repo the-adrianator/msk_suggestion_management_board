@@ -1,3 +1,5 @@
+// Pure filtering/sorting utilities for suggestions.
+// Keeps UI predictable and testable.
 import type { Suggestion, SuggestionFilters } from '../../lib/types';
 
 /**
@@ -7,7 +9,7 @@ export const filterSuggestions = (
   suggestions: Suggestion[],
   filters: SuggestionFilters
 ): Suggestion[] => {
-  return suggestions.filter(suggestion => {
+  return suggestions.filter((suggestion) => {
     // Employee filter
     if (filters.employeeId && suggestion.employeeId !== filters.employeeId) {
       return false;
@@ -36,9 +38,12 @@ export const filterSuggestions = (
     // Search text filter
     if (filters.searchText) {
       const searchLower = filters.searchText.toLowerCase();
-      const descriptionMatch = suggestion.description.toLowerCase().includes(searchLower);
-      const notesMatch = suggestion.notes?.toLowerCase().includes(searchLower) || false;
-      
+      const descriptionMatch = suggestion.description
+        .toLowerCase()
+        .includes(searchLower);
+      const notesMatch =
+        suggestion.notes?.toLowerCase().includes(searchLower) || false;
+
       if (!descriptionMatch && !notesMatch) {
         return false;
       }
@@ -61,16 +66,24 @@ export const sortSuggestions = (
 
     switch (sortBy) {
       case 'dateUpdated':
-        comparison = new Date(a.dateUpdated).getTime() - new Date(b.dateUpdated).getTime();
+        comparison =
+          new Date(a.dateUpdated).getTime() - new Date(b.dateUpdated).getTime();
         break;
-      case 'priority':
-        const priorityOrder = { high: 3, medium: 2, low: 1 };
+      case 'priority': {
+        const priorityOrder = { high: 3, medium: 2, low: 1 } as const;
         comparison = priorityOrder[a.priority] - priorityOrder[b.priority];
         break;
-      case 'status':
-        const statusOrder = { completed: 4, in_progress: 3, pending: 2, dismissed: 1 };
+      }
+      case 'status': {
+        const statusOrder = {
+          completed: 4,
+          in_progress: 3,
+          pending: 2,
+          dismissed: 1,
+        } as const;
         comparison = statusOrder[a.status] - statusOrder[b.status];
         break;
+      }
     }
 
     return order === 'desc' ? -comparison : comparison;

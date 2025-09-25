@@ -1,7 +1,11 @@
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from './firebase';
-import { sampleEmployees, sampleAdminUsers, sampleSuggestions } from './sampleData';
-import type { Employee, AdminUser, Suggestion } from './types';
+import {
+  sampleEmployees,
+  sampleAdminUsers,
+  sampleSuggestions,
+} from './sampleData';
+// Types imported implicitly via sample data; keep minimal to avoid unused errors.
 
 /**
  * Seed Firestore with sample data

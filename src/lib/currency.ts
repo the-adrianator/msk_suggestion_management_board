@@ -1,10 +1,12 @@
 // Currency utility functions
+// Use GBP as per PRD.
 
 /**
  * Format currency string (e.g., "85.00" -> "£85.00")
  */
 export const formatCurrency = (amount: string | number): string => {
-  const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+  const numericAmount =
+    typeof amount === 'string' ? parseFloat(amount) : amount;
   return new Intl.NumberFormat('en-GB', {
     style: 'currency',
     currency: 'GBP',

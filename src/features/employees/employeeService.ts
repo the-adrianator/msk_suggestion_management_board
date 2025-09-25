@@ -3,20 +3,20 @@ import { db } from '../../lib/firebase';
 import type { Employee } from '../../lib/types';
 
 /**
- * Employee service for Firestore operations
+ * Employee service for Firestore operations.
  */
 export class EmployeeService {
   private readonly collectionName = 'employees';
 
   /**
-   * Fetch all employees
+   * Fetch all employees.
    */
   async getAll(): Promise<Employee[]> {
     try {
       const employeesRef = collection(db, this.collectionName);
       const snapshot = await getDocs(employeesRef);
-      
-      return snapshot.docs.map(doc => ({
+
+      return snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Employee[];
@@ -27,17 +27,17 @@ export class EmployeeService {
   }
 
   /**
-   * Fetch single employee by ID
+   * Fetch single employee by ID.
    */
   async getById(id: string): Promise<Employee | null> {
     try {
       const employeeRef = doc(db, this.collectionName, id);
       const snapshot = await getDoc(employeeRef);
-      
+
       if (!snapshot.exists()) {
         return null;
       }
-      
+
       return {
         id: snapshot.id,
         ...snapshot.data(),

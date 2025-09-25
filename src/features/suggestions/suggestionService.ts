@@ -19,13 +19,15 @@ import type {
 } from '../../lib/types';
 
 /**
- * Suggestion service for Firestore operations
+ * Suggestion service for Firestore operations.
+ * Note: starts with client-side filters; server filters added where sensible.
  */
 export class SuggestionService {
   private readonly collectionName = 'suggestions';
 
   /**
-   * Fetch all suggestions with optional filtering
+   * Fetch all suggestions with optional filtering.
+   * Default order: Last Updated desc per PRD.
    */
   async getAll(filters?: SuggestionFilters): Promise<Suggestion[]> {
     try {
@@ -44,7 +46,7 @@ export class SuggestionService {
       }
 
       const snapshot = await getDocs(q);
-      let suggestions = snapshot.docs.map(doc => ({
+      let suggestions = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Suggestion[];
@@ -62,17 +64,17 @@ export class SuggestionService {
   }
 
   /**
-   * Fetch single suggestion by ID
+   * Fetch single suggestion by ID.
    */
   async getById(id: string): Promise<Suggestion | null> {
     try {
       const suggestionRef = doc(db, this.collectionName, id);
       const snapshot = await getDoc(suggestionRef);
-      
+
       if (!snapshot.exists()) {
         return null;
       }
-      
+
       return {
         id: snapshot.id,
         ...snapshot.data(),
@@ -84,9 +86,13 @@ export class SuggestionService {
   }
 
   /**
-   * Create new suggestion
+   * Create new suggestion.
+   * Defaults: source=admin, status=pending, sensible timestamps.
    */
-  async create(payload: CreateSuggestionPayload, createdBy: string): Promise<Suggestion> {
+  async create(
+    payload: CreateSuggestionPayload,
+    createdBy: string
+  ): Promise<Suggestion> {
     try {
       const now = getCurrentTimestamp();
       const suggestionData = {
@@ -99,8 +105,11 @@ export class SuggestionService {
         priority: payload.priority || 'medium',
       };
 
-      const docRef = await addDoc(collection(db, this.collectionName), suggestionData);
-      
+      const docRef = await addDoc(
+        collection(db, this.collectionName),
+        suggestionData
+      );
+
       return {
         id: docRef.id,
         ...suggestionData,
@@ -112,7 +121,8 @@ export class SuggestionService {
   }
 
   /**
-   * Update suggestion status
+   * Update suggestion status.
+   * Sets dateUpdated; sets dateCompleted if completed.
    */
   async updateStatus(update: StatusUpdate): Promise<void> {
     try {
@@ -141,10 +151,13 @@ export class SuggestionService {
   }
 
   /**
-   * Client-side filtering of suggestions
+   * Client-side filtering of suggestions.
    */
-  filterSuggestions(suggestions: Suggestion[], filters: SuggestionFilters): Suggestion[] {
-    return suggestions.filter(suggestion => {
+  filterSuggestions(
+    suggestions: Suggestion[],
+    filters: SuggestionFilters
+  ): Suggestion[] {
+    return suggestions.filter((suggestion) => {
       // Employee filter
       if (filters.employeeId && suggestion.employeeId !== filters.employeeId) {
         return false;
@@ -173,9 +186,12 @@ export class SuggestionService {
       // Search text filter
       if (filters.searchText) {
         const searchLower = filters.searchText.toLowerCase();
-        const descriptionMatch = suggestion.description.toLowerCase().includes(searchLower);
-        const notesMatch = suggestion.notes?.toLowerCase().includes(searchLower) || false;
-        
+        const descriptionMatch = suggestion.description
+          .toLowerCase()
+          .includes(searchLower);
+        const notesMatch =
+          suggestion.notes?.toLowerCase().includes(searchLower) || false;
+
         if (!descriptionMatch && !notesMatch) {
           return false;
         }

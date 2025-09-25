@@ -1,4 +1,5 @@
 // Date utility functions
+// Keeps display and business rules consistent.
 
 /**
  * Get current ISO timestamp
@@ -16,7 +17,9 @@ export const isOverdue = (
 ): boolean => {
   const created = new Date(dateCreated);
   const now = new Date();
-  const diffInDays = Math.floor((now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24));
+  const diffInDays = Math.floor(
+    (now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)
+  );
   return diffInDays > thresholdDays;
 };
 
