@@ -2,9 +2,16 @@
 import './App.css';
 import AuthPanel from './components/AuthPanel';
 import { useAuth } from './features/auth/useAuth';
+import { useSuggestions } from './features/suggestions/useSuggestions';
+import { useEmployees } from './features/employees/useEmployees';
+import DashboardTable from './components/DashboardTable';
+import DashboardFilters from './components/DashboardFilters';
 
 function App() {
   const { session, can } = useAuth();
+  const { suggestions, filters, setFilters, refresh } =
+    useSuggestions('dateUpdated');
+  const { employees } = useEmployees();
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -21,9 +28,16 @@ function App() {
           {can.updateStatus ? 'Yes' : 'No'}
         </div>
       </div>
-      <div className="border rounded p-4 text-sm text-gray-600">
-        Dashboard will appear here in Stage 3.
-      </div>
+      <DashboardFilters
+        filters={filters}
+        onFiltersChange={setFilters}
+        employees={employees}
+      />
+      <DashboardTable
+        suggestions={suggestions}
+        canUpdate={can.updateStatus}
+        onRefresh={refresh}
+      />
     </div>
   );
 }
